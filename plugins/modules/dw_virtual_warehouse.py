@@ -82,6 +82,9 @@ options:
   autoscaling_max_nodes:
     description: The maximum number of available nodes for Virtual Warehouse autoscaling.
     type: int
+  autoscaling_impalaScaleDownDelaySeconds:
+    description: Scale down threshold in seconds. 
+    type: int
   common_configs: 
     description: Configurations that are applied to every application in the Virtual Warehouse service.
     type: dict
@@ -326,6 +329,7 @@ class DwVirtualWarehouse(CdpModule):
         self.template = self._get_param('template')
         self.autoscaling_min_nodes = self._get_param('autoscaling_min_nodes')
         self.autoscaling_max_nodes = self._get_param('autoscaling_max_nodes')
+        self.autoscaling_impalaScaleDownDelaySeconds = self._get_param('autoscaling_impalaScaleDownDelaySeconds')
         self.common_configs = self._get_param('common_configs')
         self.application_configs = self._get_param('application_configs')
         self.ldap_groups = self._get_param('ldap_groups')
@@ -405,6 +409,7 @@ class DwVirtualWarehouse(CdpModule):
                                                    template=self.template,
                                                    autoscaling_min_cluster=self.autoscaling_min_nodes,
                                                    autoscaling_max_cluster=self.autoscaling_max_nodes,
+                                                   autoscaling_impalaScaleDownDelaySeconds=self.autoscaling_impalaScaleDownDelaySeconds,
                                                    common_configs=self.common_configs,
                                                    application_configs=self.application_configs,
                                                    ldap_groups=self.ldap_groups, enable_sso=self.enable_sso,
@@ -433,6 +438,7 @@ def main():
             template=dict(type='str', choices=['xsmall', 'small', 'medium', 'large']),
             autoscaling_min_nodes=dict(type='int'),
             autoscaling_max_nodes=dict(type='int'),
+            autoscaling_impalaScaleDownDelaySeconds=dict(type='int'),
             common_configs=dict(type='dict', options=dict(
                 configBlocks = dict(type='list', elements='dict', options=dict(
                     id=dict(type='str'),
